@@ -1,47 +1,117 @@
-### Module Name: User Management
+**UserManagement Prompt Tests**
 
-#### Functionality Overview
-The User Management module is designed to provide a comprehensive framework for handling user registration, authentication, and management of user profiles. Its primary goal is to ensure an optimal service experience by facilitating seamless interaction between users and the system. 
+**Тест 1**: Проверка функциональности  
+Входные данные: "Опиши систему регистрации пользователя с помощью электронной почты и пароля, включая валидацию данных."  
+Ожидаемый результат: Формализованный процесс регистрации с указанием валидации данных, создания пароля, а также ссылку на функцию восстановления пароля.
 
-#### Key Features
+**Тест 2**: Проверка границ и исключений  
+Входные данные: "Как обработать ситуацию, когда пользователь забыл пароль?"  
+Ожидаемый результат: Четкое описание процесса восстановления пароля, включая валидацию учетных данных и использование двухфакторной аутентификации.
 
-1. **User Registration**
-   - **Sign-Up Forms**: Allow users to create new accounts through user-friendly forms.
-   - **Data Validation**: Ensure that user input is validated (e.g., strong password enforcement, email format validation).
-   - **Email Verification**: Send a verification email to confirm the user's identity before account activation.
-   - **Social Media Integration**: Allow users to register using their social media accounts (e.g., Facebook, Google).
+**Тест 3**: Проверка креативности  
+Входные данные: "Как должен выглядеть процесс регистрации для пользователей с ограниченными возможностями?"  
+Ожидаемый результат: Идеи и примеры адаптации форм регистрации, предусматривающие доступность и удобство для людей с ограниченными возможностями.
 
-2. **Authentication**
-   - **Login Functionality**: Enable users to access their accounts using email/username and password.
-   - **Two-Factor Authentication (2FA)**: Optionally enhance security by requiring an additional authentication step (e.g., SMS or authenticator app).
-   - **Password Recovery**: Implement a mechanism for users to reset forgotten passwords securely via email.
-   - **Session Management**: Handle user sessions effectively, including handling timeouts and logout functionalities.
+**Тест 4**: Проверка разнообразия данных  
+Входные данные: "Представь, что система должна поддерживать регистрацию пользователей через социальные сети. Как это реализовать?"  
+Ожидаемый результат: Подробное описание интеграции с социальными сетями и адаптация процесса регистрации под это требование.
 
-3. **User Profile Management**
-   - **Profile Creation and Editing**: Allow users to create and edit their profiles, including personal information, profile pictures, and preferences.
-   - **Privacy Settings**: Provide users with options to manage their privacy settings, including data visibility controls.
-   - **Account Deletion**: Allow users to permanently delete their accounts with a confirmation step to prevent accidental deletions.
-   
-4. **Role Management**
-   - **User Roles and Permissions**: Define different user roles (e.g., admin, user, guest) and assign permissions based on those roles.
-   - **Role-Based Access Control (RBAC)**: Ensure that users only have access to functionalities relevant to their roles.
+**Тест 5**: Сравнительный тест  
+Входные данные: "Создай описание для регистрации пользователей по номеру телефона. Как оно изменится по сравнению с регистрацией по электронной почте?"  
+Ожидаемый результат: Сравнительный анализ и стадии регистрации по номеру телефона и электронной почте, подчеркивающий различия в процессе и безопасности.
 
-5. **Audit and Logs**
-   - **Activity Logs**: Maintain logs of user activities, including login attempts, profile changes, and administrative actions for security and tracking purposes.
-   - **Analytics**: Integrate analytics to monitor user engagement and system performance related to user interactions.
+---
 
-6. **Integration and APIs**
-   - **API Support**: Provide RESTful APIs for external applications to interact with the user management functionalities.
-   - **Third-Party Integration**: Facilitate integration with external services, such as authentication providers and analytics tools.
+**MusicDiscovery Prompt Tests**
 
-#### User Experience Considerations
-- **Responsive Design**: Ensure the user interface is responsive and accessible on various devices.
-- **User-Friendly Interface**: Aim for a clean, intuitive layout that guides users through the registration and management processes.
-- **Error Handling**: Provide clear feedback for errors during registration and authentication, helping users correct issues quickly.
+**Тест 1**: Проверка функциональности  
+Входные данные: "Опиши алгоритм для создания персонализированной плейлисту на основе предпочитаемых жанров."  
+Ожидаемый результат: Подробное описание инженерного процесса, включая этапы анализа предпочтений пользователя и генерации плейлиста.
 
-#### Security Measures
-- **Data Encryption**: Encrypt sensitive user data, including passwords (hashed), to protect against data breaches.
-- **Regular Security Audits**: Regularly test and update the system to address vulnerabilities and ensure compliance with security standards.
+**Тест 2**: Проверка границ и исключений  
+Входные данные: "Что делать, если у нового пользователя нет никакой информации о предпочтениях?"  
+Ожидаемый результат: Понятное решение для холодного старта, используя методы как случайные рекомендации или данные демографии.
 
-#### Conclusion
-The User Management module is a critical component for any application or service requiring user interaction. By facilitating efficient user registration, secure authentication, and comprehensive profile management, it enhances both user satisfaction and security, leading to a better overall service experience.
+**Тест 3**: Проверка креативности  
+Входные данные: "Как модифицировать алгоритм, чтобы он создавал плейлисты для особых мероприятий, таких как свадьба?"  
+Ожидаемый результат: Креативные идеи по использованию различных данных и привлечению специфических тем для создания плейлистов.
+
+**Тест 4**: Проверка разнообразия данных  
+Входные данные: "Как алгоритм должен обрабатывать запросы для различных возрастных категорий?"  
+Ожидаемый результат: Разнообразные примеры алгоритмических подходов, учитывающие предпочтения разных возрастных групп.
+
+**Тест 5**: Сравнительный тест  
+Входные данные: "Сравни два подхода: коллаборативная фильтрация против контентной фильтрации для рекомендаций."  
+Ожидаемый результат: Четкое сравнение преимуществ и недостатков обоих методов с примерами их применения.
+
+---
+
+**ContentManagement Prompt Tests**
+
+**Тест 1**: Проверка функциональности  
+Входные данные: "Опиши, как работает система поиска музыки по жанрам."  
+Ожидаемый результат: Структурированное описание функционала поиска с примерами взаимодействия пользователя и показываемыми результатами.
+
+**Тест 2**: Проверка границ и исключений  
+Входные данные: "Как будет обрабатываться ситуация, когда запрашиваемый контент не найден?"  
+Ожидаемый результат: Четкие инструкции о переработке поисковых результатов и предложениях альтернатив.
+
+**Тест 3**: Проверка креативности  
+Входные данные: "Как пользователям можно создать динамическую плейлисту на основе текущих настроений?"  
+Ожидаемый результат: Идеи по интеграции данных о эмоциональном состоянии пользователей и изменения плейлистов.
+
+**Тест 4**: Проверка разнообразия данных  
+Входные данные: "Опиши, как новая система будет учитывать разные языки интерфейса для пользователя."  
+Ожидаемый результат: Указания для поддержки многоязычности в интерфейсе и взаимодействии с пользователем.
+
+**Тест 5**: Сравнительный тест  
+Входные данные: "Сравни процесс создания плейлистов пользователей и возможности автоматического создания плейлистов системой."  
+Ожидаемый результат: Анализ обоих подходов с их преимуществами и недостатками, а также примерами.
+
+---
+
+**PodcastAndRadioSupport Prompt Tests**
+
+**Тест 1**: Проверка функциональности  
+Входные данные: "Опиши процесс доступа к подкастам и радиостанциям через приложение."  
+Ожидаемый результат: Структурированный подход к навигации и использования функций слуха.
+
+**Тест 2**: Проверка границ и исключений  
+Входные данные: "Что делать, если подкаст стал недоступен из-за проблем с правами?"  
+Ожидаемый результат: Четкое описание действий и альтернативных предложений, которые можно сделать.
+
+**Тест 3**: Проверка креативности  
+Входные данные: "Какие функции могут увеличить привлекательность радио для новых слушателей?"  
+Ожидаемый результат: Креативные концепции улучшения пользовательского опыта при прослушивании радио.
+
+**Тест 4**: Проверка разнообразия данных  
+Входные данные: "Как можно интегрировать радиостанции с различными музыкальными жанрами?"  
+Ожидаемый результат: Примеры подходов к пользовательским рекомендациям на основе предпочтений к жанрам.
+
+**Тест 5**: Сравнительный тест  
+Входные данные: "Сравни использование API для подкастов и радиостанций в плане функциональности."  
+Ожидаемый результат: Указания на плюсы и минусы каждого подхода, а также случаи, когда использовать один предпочтительнее другого.
+
+---
+
+**NotificationSystem Prompt Tests**
+
+**Тест 1**: Проверка функциональности  
+Входные данные: "Опиши стратегию отправки уведомлений о новых релизах музыки."  
+Ожидаемый результат: Подробное описание процесса настройки уведомлений и потенциальные методы связи с пользователями.
+
+**Тест 2**: Проверка границ и исключений  
+Входные данные: "Как будет обрабатываться запрос на отмену подписки на уведомления?"  
+Ожидаемый результат: Простое и понятное решение, противодействующее негативному опыту пользователя.
+
+**Тест 3**: Проверка креативности  
+Входные данные: "Какие способы можно использовать для отправки уведомлений пользователям о эксклюзивных предложениях?"  
+Ожидаемый результат: Креативные идеи для увеличения вовлеченности пользователей через уведомления.
+
+**Тест 4**: Проверка разнообразия данных  
+Входные данные: "Как система будет учитывать разные временные зоны пользователей для отправки уведомлений?"  
+Ожидаемый результат: Решения для синхронизации уведомлений с учетом часовых поясов.
+
+**Тест 5**: Сравнительный тест  
+Входные данные: "Сравни эффективные методы информирования пользователей через email и push-уведомления."  
+Ожидаемый результат: Четкий анализ преимуществ и недостатков каждого из методов информирования о событиях.
