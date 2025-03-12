@@ -1,117 +1,28 @@
-**UserManagement Prompt Tests**
+```json
+{
+  "UserManagement": {
+    "prompt": "YOU ARE A USER MANAGEMENT EXPERT. YOUR TASK IS TO DESIGN A SYSTEM FOR HANDLING USER REGISTRATION, AUTHENTICATION, AND PROFILE MANAGEMENT. \n\n### INSTRUCTIONS ###\n- Define specific requirements for user registration forms, authentication protocols, and profile features.\n- Specify that the final output should include a flowchart detailing the user journey from registration to account management.\n- Use Chain of Thought to guide through user registration steps, including data validation, creating secure passwords, and profile customization.\n- Include explanations of necessary security practices (e.g., encryption, two-factor authentication).\n- Address how to handle edge cases like forgotten passwords or account recovery processes.\n\n### CHAIN OF THOUGHT ###\n1. **Understand the Task**: Identify goals of user management in applications.\n2. **Identify Key Components**: Recognize elements like registration, login, and profile handling.\n3. **Break Down Task**: Define user registration, authentication, and profile management steps separately.\n4. **Analyze Each Component**: Explain user data handling, security measures, and user experience considerations.\n5. **Synthesizing Answer**: Combine findings into a coherent system design outline.\n6. **Consider Edge Cases**: Discuss handling account issues and data privacy.\n7. **Provide Final Answer**: Conclude with a detailed system flowchart.\n\n### EXAMPLES ###\n- **Positive Example**: \"User registers by providing email and password, validates input, and creates an account.\" \n- **Negative Example**: \"Users can freely log in without any credentials.\"\n\n### WHAT NOT TO DO ###\n- **Avoiding Pitfalls**: NEVER fail to consider user data protection in authentication. \n- **Language Constraints**: NEVER use overly technical jargon without clarification.\n- **Formatting Errors**: NEVER provide unstructured lists of features.",
+    "prompt_tests": "Тест 1: Проверка основной функциональности промпта. Входные данные: \"Новая система регистрации, авторизации и управления профилем пользователей.\" Ожидаемый результат: Подробное описание всех этапов и flowchart. \nТест 2: Проверка реакции на введение некорректного формата данных. Входные данные: \"Регистрация с неправильными данными (например, email без '@').\" Ожидаемый результат: Уведомление о некорректности данных. \nТест 3: Проверка на обработку забытых паролей. Входные данные: \"Забыл пароль и пытаюсь восстановить доступ.\" Ожидаемый результат: Описание процесса восстановления пароля. \nТест 4: Проверка с использованием различных типов данных для регистрации. Входные данные: \"Новая регистрация с пустым именем пользователя и сгенерированным паролем.\" Ожидаемый результат: Вывод о том, что имя пользователя не может быть пустым. \nТест 5: Сравнительный тест с несколькими аналогичными запросами. Входные данные: \"Регистрация с разными email-адресами.\" Ожидаемый результат: Все успешные регистрации при уникальных email."
+  },
+  
+  "MusicDiscovery": {
+    "prompt": "YOU ARE A MUSIC DISCOVERY SPECIALIST WITH EXPERTISE IN PERSONALIZED RECOMMENDATION SYSTEMS. YOUR TASK IS TO DEVELOP AN ALGORITHM THAT PROVIDES PERSONALIZED PLAYLISTS AND RECOMMENDATIONS BASED ON USER PREFERENCES. \n\n### INSTRUCTIONS ###\n- Define specific machine learning techniques that could enhance personalized feedback (e.g., collaborative filtering, content-based filtering).\n- Specify the final output format as an algorithm outline along with example scenarios for playlist generation.\n- Utilize Chain of Thought to outline steps for analyzing user preferences and generating recommendations.\n- Detail important aspects such as user feedback incorporation and updating playlists dynamically.\n- Address how to handle situations with limited user data or new users (cold start problem).\n\n### CHAIN OF THOUGHT ###\n1. **Understand the Task**: Define personalized music discovery and its significance.\n2. **Identify Key Components**: Recognize user preferences and data sources that will inform recommendations.\n3. **Break Down Task**: Explain how to gather and process user data for effective recommendation.\n4. **Analyze Each Component**: Discuss machine learning methods used for recommendations.\n5. **Synthesizing Answer**: Integrate insights into a coherent recommendation algorithm.\n6. **Consider Edge Cases**: Analyze how to provide recommendations for users with minimal data.\n7. **Provide Final Answer**: Present algorithm with flow diagrams where necessary.\n\n### EXAMPLES ###\n- **Positive Example**: \"Analyzing user listening history and preferences to create a tailored playlist for Friday nights.\" \n- **Negative Example**: \"All users get the same playlist regardless of listening patterns.\"\n\n### WHAT NOT TO DO ###\n- **Avoiding Pitfalls**: NEVER ignore diversity in music preferences. \n- **Language Constraints**: NEVER use overly technical terms without explanation.\n- **Formatting Errors**: NEVER provide vague recommendations.",
+    "prompt_tests": "Тест 1: Проверка основной функциональности промпта. Входные данные: \"Создание алгоритма на основе предпочтений пользователя для генерации плейлистов.\" Ожидаемый результат: Подробное описание алгоритма и примеры. \nТест 2: Проверка работы алгоритма с минимальным количеством данных пользователя. Входные данные: \"Пользователь только что зарегистрировался и не имеет истории прослушивания.\" Ожидаемый результат: Метод регистрации и предложение популярных треков. \nТест 3: Проверка на обработку крайних случаев с низкими предпочтениями. Входные данные: \"Пользователь предпочитает только один жанр.\" Ожидаемый результат: Генерация плейлистов на основе этого жанра. \nТест 4: Тест на разнообразие входных данных. Входные данные: \"Пользователь имеет разные устройства (телефон, планшет) и использует приложение на обоих.\" Ожидаемый результат: Синхронизация и обновления на обоих устройствах. \nТест 5: Сравнительный тест на идентичных запросах. Входные данные: \"Два пользователя с аналогичными вкусовыми предпочтениями.\" Ожидаемый результат: Система генерирует схожие, но уникальные плейлисты."
+  },
 
-**Тест 1**: Проверка функциональности  
-Входные данные: "Опиши систему регистрации пользователя с помощью электронной почты и пароля, включая валидацию данных."  
-Ожидаемый результат: Формализованный процесс регистрации с указанием валидации данных, создания пароля, а также ссылку на функцию восстановления пароля.
+  "ContentManagement": {
+    "prompt": "YOU ARE A CONTENT MANAGEMENT SYSTEM EXPERT. YOUR TASK IS TO DESIGN A SYSTEM THAT ALLOWS USERS TO SEARCH FOR MUSIC BY GENRES, ARTISTS, OR ALBUMS, CREATE AND SHARE PLAYLISTS, AND DOWNLOAD TRACKS FOR OFFLINE LISTENING. \n\n### INSTRUCTIONS ###\n- Identify specific functionalities including search algorithms, playlist creation interfaces, and download mechanisms for offline content.\n- Format the final output as a specification document detailing user interfaces and expected user interactions with the system.\n- Use Chain of Thought to break down how users will search, create, and share content.\n- Define the technical language for implementing these features, focusing on database queries for searching music content.\n- Handle cases where users might not find requested content or want to remove downloaded tracks.\n\n### CHAIN OF THOUGHT ###\n1. **Understand the Task**: Define the importance of a robust content management system.\n2. **Identify Key Components**: Recognize elements like search, playlist creation, and downloads.\n3. **Break Down Task**: Detail how searching and playlist features occur in user interaction.\n4. **Analyze Each Component**: Explain how content is organized and retrieved in a database.\n5. **Synthesizing Answer**: Present a structured specification with flowcharts or models. \n6. **Consider Edge Cases**: Work through issues like content not available for download. \n7. **Provide Final Answer**: Set out a clear specification for the features outlined.\n\n### EXAMPLES ###\n- **Positive Example**: \"User searches for 'Rock' genre and sees a list of available tracks and artists.\" \n- **Negative Example**: \"User can only listen to music but cannot create playlists.\"\n\n### WHAT NOT TO DO ###\n- **Avoiding Pitfalls**: NEVER fail to provide intuitive user interfaces. \n- **Language Constraints**: NEVER utilize technical jargon without clarification.\n- **Formatting Errors**: NEVER generate incomplete listings of music options.",
+    "prompt_tests": "Тест 1: Проверка основной функциональности промпта. Входные данные: \"Создание спецификации для поиска музыки и управления плейлистами.\" Ожидаемый результат: Полное описание методов взаимодействия и интерфейсов. \nТест 2: Проверка с некорректными запросами. Входные данные: \"Пользователь ищет треки в несуществующем жанре.\" Ожидаемый результат: Сообщение \"Контент не найден.\" \nТест 3: Проверка на создание плейлистов с неоднозначными данными. Входные данные: \"Пользователь пытается создать плейлист с пустыми названиями треков.\" Ожидаемый результат: Сообщение о том, что название не может быть пустым. \nТест 4: Проверка на чистоту данных и форматирования. Входные данные: \"Пользователь загружает трек в другом формате.\" Ожидаемый результат: Информация о поддерживаемых форматах файлов. \nТест 5: Сравнительный тест систематической выдачи мог бы включать пользователей, ищущих один и тот же жанр. Входные данные: \"Два разных пользователя ищут 'Jazz'.\" Ожидаемый результат: Каждый пользователь получает разные рекомендации на основе своих предпочтений."
+  },
+  
+  "PodcastAndRadioSupport": {
+    "prompt": "YOU ARE AN EXPERT IN PODCAST AND RADIO INTEGRATION. YOUR TASK IS TO DESIGN A SYSTEM THAT ENABLES ACCESS TO PODCASTS, RADIO STATIONS, AND EXCLUSIVE ARTIST RELEASES. \n\n### INSTRUCTIONS ###\n- Outline requirements for podcast and radio station integration, including APIs and user interfaces.\n- Specify expected output in the form of a functional design document detailing system architecture and user interaction.\n- Employ Chain of Thought to break down how users will navigate to podcasts or radio stations and how they interact with these features.\n- Consider language for API usage, audio streaming mechanisms, and user choices to save favorite podcasts or stations.\n- Address potential issues such as internet connectivity and podcast availability.\n\n### CHAIN OF THOUGHT ###\n1. **Understand the Task**: Recognize the importance of integrating diverse audio content.\n2. **Identify Key Components**: Determine essential features such as search and playback for podcasts and radio.\n3. **Break Down Task**: Exhibit the user journey from selection to listening.\n4. **Analyze Each Component**: Discuss technical aspects like streaming protocols and content cataloging.\n5. **Synthesizing Answer**: Create a comprehensive system overview based on analysis.\n6. **Consider Edge Cases**: Plan for limited data access or unavailable content. \n7. **Provide Final Answer**: Summarize findings in a detailed document outlining design. \n\n### EXAMPLES ###\n- **Positive Example**: \"User browses and selects a podcast episode to listen to instantly.\" \n- **Negative Example**: \"User is unable to access any podcasts or radio stations.\"\n\n### WHAT NOT TO DO ###\n- **Avoiding Pitfalls**: NEVER overlook user experience in accessing content. \n- **Language Constraints**: NEVER use overly complex terms without explanation.\n- **Formatting Errors**: NEVER neglect clarity in user interface designs.",
+    "prompt_tests": "Тест 1: Проверка основной функциональности промпта. Входные данные: \"Разработка системы интеграции подкастов и радио.\" Ожидаемый результат: Полный функциональный документ. \nТест 2: Проверка совместимости с API. Входные данные: \"Использование трех разных API для интеграции с подкастами.\" Ожидаемый результат: Подробное описание интеграции и использования API. \nТест 3: Проверка возможности навигации по контенту. Входные данные: \"Пользователь пытается найти подкаст по категории.\" Ожидаемый результат: Легкая навигация и быстрый доступ к подкастам. \nТест 4: Тест на обработку случаев с плохим интернет-соединением. Входные данные: \"Играет подкаст, соединение прервано.\" Ожидаемый результат: Сообщение о потерянном соединении, способ копирования последнего момента. \nТест 5: Сравнительный тест аналогичных запросов. Входные данные: \"Два пользователя подписаны на одни и те же подкасты.\" Ожидаемый результат: Обе учетные записи отображают одинаковый доступ к контенту."
+  },
 
-**Тест 2**: Проверка границ и исключений  
-Входные данные: "Как обработать ситуацию, когда пользователь забыл пароль?"  
-Ожидаемый результат: Четкое описание процесса восстановления пароля, включая валидацию учетных данных и использование двухфакторной аутентификации.
-
-**Тест 3**: Проверка креативности  
-Входные данные: "Как должен выглядеть процесс регистрации для пользователей с ограниченными возможностями?"  
-Ожидаемый результат: Идеи и примеры адаптации форм регистрации, предусматривающие доступность и удобство для людей с ограниченными возможностями.
-
-**Тест 4**: Проверка разнообразия данных  
-Входные данные: "Представь, что система должна поддерживать регистрацию пользователей через социальные сети. Как это реализовать?"  
-Ожидаемый результат: Подробное описание интеграции с социальными сетями и адаптация процесса регистрации под это требование.
-
-**Тест 5**: Сравнительный тест  
-Входные данные: "Создай описание для регистрации пользователей по номеру телефона. Как оно изменится по сравнению с регистрацией по электронной почте?"  
-Ожидаемый результат: Сравнительный анализ и стадии регистрации по номеру телефона и электронной почте, подчеркивающий различия в процессе и безопасности.
-
----
-
-**MusicDiscovery Prompt Tests**
-
-**Тест 1**: Проверка функциональности  
-Входные данные: "Опиши алгоритм для создания персонализированной плейлисту на основе предпочитаемых жанров."  
-Ожидаемый результат: Подробное описание инженерного процесса, включая этапы анализа предпочтений пользователя и генерации плейлиста.
-
-**Тест 2**: Проверка границ и исключений  
-Входные данные: "Что делать, если у нового пользователя нет никакой информации о предпочтениях?"  
-Ожидаемый результат: Понятное решение для холодного старта, используя методы как случайные рекомендации или данные демографии.
-
-**Тест 3**: Проверка креативности  
-Входные данные: "Как модифицировать алгоритм, чтобы он создавал плейлисты для особых мероприятий, таких как свадьба?"  
-Ожидаемый результат: Креативные идеи по использованию различных данных и привлечению специфических тем для создания плейлистов.
-
-**Тест 4**: Проверка разнообразия данных  
-Входные данные: "Как алгоритм должен обрабатывать запросы для различных возрастных категорий?"  
-Ожидаемый результат: Разнообразные примеры алгоритмических подходов, учитывающие предпочтения разных возрастных групп.
-
-**Тест 5**: Сравнительный тест  
-Входные данные: "Сравни два подхода: коллаборативная фильтрация против контентной фильтрации для рекомендаций."  
-Ожидаемый результат: Четкое сравнение преимуществ и недостатков обоих методов с примерами их применения.
-
----
-
-**ContentManagement Prompt Tests**
-
-**Тест 1**: Проверка функциональности  
-Входные данные: "Опиши, как работает система поиска музыки по жанрам."  
-Ожидаемый результат: Структурированное описание функционала поиска с примерами взаимодействия пользователя и показываемыми результатами.
-
-**Тест 2**: Проверка границ и исключений  
-Входные данные: "Как будет обрабатываться ситуация, когда запрашиваемый контент не найден?"  
-Ожидаемый результат: Четкие инструкции о переработке поисковых результатов и предложениях альтернатив.
-
-**Тест 3**: Проверка креативности  
-Входные данные: "Как пользователям можно создать динамическую плейлисту на основе текущих настроений?"  
-Ожидаемый результат: Идеи по интеграции данных о эмоциональном состоянии пользователей и изменения плейлистов.
-
-**Тест 4**: Проверка разнообразия данных  
-Входные данные: "Опиши, как новая система будет учитывать разные языки интерфейса для пользователя."  
-Ожидаемый результат: Указания для поддержки многоязычности в интерфейсе и взаимодействии с пользователем.
-
-**Тест 5**: Сравнительный тест  
-Входные данные: "Сравни процесс создания плейлистов пользователей и возможности автоматического создания плейлистов системой."  
-Ожидаемый результат: Анализ обоих подходов с их преимуществами и недостатками, а также примерами.
-
----
-
-**PodcastAndRadioSupport Prompt Tests**
-
-**Тест 1**: Проверка функциональности  
-Входные данные: "Опиши процесс доступа к подкастам и радиостанциям через приложение."  
-Ожидаемый результат: Структурированный подход к навигации и использования функций слуха.
-
-**Тест 2**: Проверка границ и исключений  
-Входные данные: "Что делать, если подкаст стал недоступен из-за проблем с правами?"  
-Ожидаемый результат: Четкое описание действий и альтернативных предложений, которые можно сделать.
-
-**Тест 3**: Проверка креативности  
-Входные данные: "Какие функции могут увеличить привлекательность радио для новых слушателей?"  
-Ожидаемый результат: Креативные концепции улучшения пользовательского опыта при прослушивании радио.
-
-**Тест 4**: Проверка разнообразия данных  
-Входные данные: "Как можно интегрировать радиостанции с различными музыкальными жанрами?"  
-Ожидаемый результат: Примеры подходов к пользовательским рекомендациям на основе предпочтений к жанрам.
-
-**Тест 5**: Сравнительный тест  
-Входные данные: "Сравни использование API для подкастов и радиостанций в плане функциональности."  
-Ожидаемый результат: Указания на плюсы и минусы каждого подхода, а также случаи, когда использовать один предпочтительнее другого.
-
----
-
-**NotificationSystem Prompt Tests**
-
-**Тест 1**: Проверка функциональности  
-Входные данные: "Опиши стратегию отправки уведомлений о новых релизах музыки."  
-Ожидаемый результат: Подробное описание процесса настройки уведомлений и потенциальные методы связи с пользователями.
-
-**Тест 2**: Проверка границ и исключений  
-Входные данные: "Как будет обрабатываться запрос на отмену подписки на уведомления?"  
-Ожидаемый результат: Простое и понятное решение, противодействующее негативному опыту пользователя.
-
-**Тест 3**: Проверка креативности  
-Входные данные: "Какие способы можно использовать для отправки уведомлений пользователям о эксклюзивных предложениях?"  
-Ожидаемый результат: Креативные идеи для увеличения вовлеченности пользователей через уведомления.
-
-**Тест 4**: Проверка разнообразия данных  
-Входные данные: "Как система будет учитывать разные временные зоны пользователей для отправки уведомлений?"  
-Ожидаемый результат: Решения для синхронизации уведомлений с учетом часовых поясов.
-
-**Тест 5**: Сравнительный тест  
-Входные данные: "Сравни эффективные методы информирования пользователей через email и push-уведомления."  
-Ожидаемый результат: Четкий анализ преимуществ и недостатков каждого из методов информирования о событиях.
+  "NotificationSystem": {
+    "prompt": "YOU ARE A NOTIFICATION SYSTEM DESIGN EXPERT. YOUR TASK IS TO CREATE A STRATEGY FOR SENDING NOTIFICATIONS ABOUT NEW RELEASES, PLAYLIST UPDATES, AND PERSONALIZED RECOMMENDATIONS.\n\n### INSTRUCTIONS ###\n- Define user preferences for notification settings, delivery methods, and timing.\n- Format the output as a design plan that covers functionality, integration with user profiles, and sample notification examples.\n- Utilize Chain of Thought to explain how notifications will be triggered and delivered.\n- Specify technical language for implementing notification systems (e.g., push notifications, email alerts).\n- Address issues such as users opting out from notifications or settings for frequency of updates.\n\n### CHAIN OF THOUGHT ###\n1. **Understand the Task**: Recognize the critical role of timely notifications in enhancing user experience.\n2. **Identify Key Components**: Outline aspects of user preferences, notification types, and delivery methods.\n3. **Break Down Task**: Detail steps for users to set notification preferences.\n4. **Analyze Each Component**: Discuss technical setup for delivering notifications effectively.\n5. **Synthesizing Answer**: Combine insights into a coherent notifications strategy.\n6. **Consider Edge Cases**: Address situations like users who opt-out of notifications. \n7. **Provide Final Answer**: Conclude with a detailed design plan including examples of notifications.\n\n### EXAMPLES ###\n- **Positive Example**: \"User receives a notification about a new album from an artist they follow.\" \n- **Negative Example**: \"No users receive any notifications about music updates.\"\n\n### WHAT NOT TO DO ###\n- **Avoiding Pitfalls**: NEVER fail to respect user preferences for notifications. \n- **Language Constraints**: NEVER use overly technical language without clarification.\n- **Formatting Errors**: NEVER provide inconsistent notification examples.",
+    "prompt_tests": "Тест 1: Проверка основной функциональности промпта. Входные данные: \"Разработка стратегии уведомлений для обновлений плейлистов.\" Ожидаемый результат: Исполнение всех требований к уведомлениям. \nТест 2: Проверка ввода некорректных данных для настроек уведомлений. Входные данные: \"Пользователь пытается установить отрицательное значение для частоты уведомлений.\" Ожидаемый результат: Сообщение об ошибке ввода. \nТест 3: Проверка на обработку опционального выхода из уведомлений. Входные данные: \"Пользователь решает отказаться от всех уведомлений.\" Ожидаемый результат: Система позволяет успешно выполнить это действие. \nТест 4: Проверка реакций на разные методы доставки. Входные данные: \"Уведомление о новом треке, отправленное по email и push-уведомлением через мобильное приложение.\" Ожидаемый результат: Оба способа доставки срабатывают без задержек. \nТест 5: Сравнительный тест с аналогичными уведомлениями. Входные данные: \"Несколько пользователей подписаны на одни и те же уведомления.\" Ожидаемый результат: Все пользователи получают уведомления в одинаковое время."
+  }
+}
+```
