@@ -9,7 +9,9 @@
     "Utilize clear language appropriate for a general audience and avoid technical jargon.",
     "Explain how to handle scenarios where user data may be ambiguous or missing, suggesting clarifying questions or assumptions."
   ],
-  
+
+  ###Требуется больше опираться на расписание человека и его возможность выполнения необходимых действий.
+
   "chain_of_thought": [
     "Understand the Task: The model should grasp that it needs to analyze user behavior concerning selected habits like sports, reading, sleep, or nutrition.",
     "Identify Key Components: The model must recognize the relevant data points such as user schedules, activity times, mood, and workload.",
@@ -20,15 +22,11 @@
     "Provide Final Answer: Ensure the final output includes a personalized reminder and a motivational tip, formatted clearly."
   ],
   
-  "examples": {
-    "positive_example": "User selects 'exercise' as a habit. AI analyzes the user's activity patterns and sends a notification: 'Good morning! 🌞 Remember to take a 30-minute walk today! If you feel like skipping, remember how energized you felt after yesterday's workout!'",
-    "negative_example": "User selects 'reading.' AI sends a vague message: 'You should read more.' This lacks personalization and specific suggestions."
-  },
-  
   "what_not_to_do": {
     "avoiding_pitfalls": "NEVER generate generic responses that do not consider the user's specific context or past behavior.",
     "language_constraints": "NEVER use overly complex terminology or jargon that may confuse the user.",
     "formatting_errors": "NEVER present information in a cluttered or unclear manner; ensure the output is concise and easy to understand."
+    в случае когда входных данных недостаточно для хорошего и корректного ответа требутся запросить соответсвующие данные.
   }
 }
 ```
