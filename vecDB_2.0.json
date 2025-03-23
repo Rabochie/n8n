@@ -1,0 +1,280 @@
+[
+    {
+        "name": "Basic LLM Chain",
+        "parameters": {
+            "promptType": "string (например, 'define', 'input')",
+            "text": "string (текст запроса или выражение, например, '= {{$json[\"question\"]}}')",
+            "hasOutputParser": "boolean (true/false, по умолчанию false)",
+            "messages": {
+                "messageValues": "array (массив объектов, например, [{'message': 'System: You are a helpful assistant.'}])"
+            }
+        },
+        "description": "Узел для работы с большими языковыми моделями (LLM). Используется для создания цепочки обработки текста. Поле 'promptType' определяет источник запроса: 'define' — текст задаётся вручную в 'text' (например, 'Extract key information from the input text.'), 'input' — запрос берётся из входных данных (например, 'chatInput' из JSON). 'text' — сам запрос или выражение для динамического заполнения (например, '= {{$json[\"question\"]}}' извлекает значение из входа). 'hasOutputParser' включает парсер вывода: если true, требуется подключение узла 'Structured Output Parser' через 'ai_outputParser'. 'messages' — массив инструкций для модели, где 'messageValues' содержит объекты с полем 'message' (например, системное сообщение 'System: You are a helpful assistant.'). Узел принимает вход 'ai_languageModel' от модели (например, 'OpenAI Chat Model') и выдаёт текст в 'main'. Пример: {'promptType': 'define', 'text': 'Extract key information from the input text.', 'hasOutputParser': true, 'messages': {'messageValues': [{'message': 'System: You are a helpful assistant.'}]}}."
+    },
+    {
+        "name": "Supabase",
+        "parameters": {
+            "operation": "string (например, 'create', 'get', 'getAll', 'update', 'delete')",
+            "table": "string (имя таблицы, например, 'users')",
+            "fieldsUi": {
+                "fieldValues": "array (массив объектов, например, [{'fieldId': 'name', 'fieldValue': 'Jane Doe'}, {'fieldId': 'email', 'fieldValue': 'jane@example.com'}])"
+            },
+            "rowId": "string (ID строки для 'update' или 'delete', например, '1', опционально)"
+        },
+        "description": "Узел для взаимодействия с базой данных Supabase (Postgres-совместимой). 'operation' задаёт действие: 'create' — создать запись, 'get' — получить по ID, 'getAll' — все записи, 'update' — обновить, 'delete' — удалить. 'table' — имя таблицы в Supabase (например, 'users'). 'fieldsUi' содержит 'fieldValues' — массив объектов с 'fieldId' (имя столбца) и 'fieldValue' (значение, может быть статическим или выражением, например, '= {{$json[\"name\"]}}'). Для 'update' или 'delete' добавьте 'rowId' — идентификатор строки. Требуются credentials типа 'supabaseApi' с URL и ключом API. Вход 'main' опционален (данные для вставки/обновления), выход 'main' возвращает результат операции (например, созданную запись). Пример: {'operation': 'create', 'table': 'users', 'fieldsUi': {'fieldValues': [{'fieldId': 'name', 'fieldValue': 'Jane Doe'}, {'fieldId': 'email', 'fieldValue': 'jane@example.com'}]}}."
+    },
+    {
+        "name": "Supabase Vector Store",
+        "parameters": {
+            "operation": "string (например, 'insert', 'getMany', 'update', 'tool')",
+            "table": "string (имя таблицы, например, 'documents')",
+            "prompt": "string (запрос для 'getMany', например, '= {{$json[\"query\"]}}', опционально)",
+            "limit": "number (ограничение результатов для 'getMany', например, 5, опционально)"
+        },
+        "description": "Узел для работы с векторным хранилищем в Supabase (семантический поиск). 'operation' определяет режим: 'insert' — вставить документы с embeddings, 'getMany' — найти похожие записи по запросу, 'update' — обновить по ID, 'tool' — использовать как инструмент для AI Agent. 'table' — имя таблицы с колонками id, content, embedding (например, 'documents'). Для 'insert' нужен вход 'ai_embedding' от узла Embeddings (например, 'Embeddings OpenAI') и 'main' с контентом. Для 'getMany' укажите 'prompt' (запрос, может быть выражением) и 'limit' (максимальное число результатов). Требуются credentials 'supabaseApi' и таблица с функцией match_documents. Выход 'main' возвращает данные (например, найденные документы). Пример: {'operation': 'insert', 'table': 'documents'} или {'operation': 'getMany', 'table': 'documents', 'prompt': '= {{$json[\"query\"]}}', 'limit': 5}."
+    },
+    {
+        "name": "Python Code",
+        "parameters": {
+            "language": "string (должно быть 'python')",
+            "pythonCode": "string (Python-код, например, 'return {\"result\": input_data[\"value\"] * 2}')"
+        },
+        "description": "Узел для выполнения Python-кода через Pyodide. 'language' фиксировано как 'python'. 'pythonCode' — строка с кодом, где 'input_data' — входные данные в формате JSON или binary (доступ через $binary). Код должен возвращать результат через 'return' (например, JSON-объект). Используется для вычислений или обработки данных. Ограничения: поддерживаются только библиотеки Pyodide, нет доступа к внешним API без дополнительных узлов. Вход 'main' принимает данные, выход 'main' возвращает результат выполнения. Пример: {'language': 'python', 'pythonCode': 'return {\"result\": input_data[\"value\"] * 2}'} удваивает значение поля 'value' из входных данных."
+    },
+    {
+        "name": "Loop",
+        "parameters": {
+            "iterations": "number (количество итераций, например, 5, опционально)",
+            "condition": "string (условие продолжения, например, '= {{$node[\"Check\"].json[\"continue\"]}}', опционально)"
+        },
+        "description": "Узел для циклической обработки данных (предположительно 'Loop Over Items'). Используется для обработки массивов или пагинации. 'iterations' задаёт фиксированное число циклов (если указано), 'condition' — динамическое условие продолжения (например, проверка значения из другого узла). Вход 'main' принимает массив данных, выход 'main' передаёт элементы по одному в подключённые узлы. Требует обратного соединения для завершения цикла (например, через 'If' или 'Switch'). Параметры зависят от реализации и часто задаются в UI. Пример: {'iterations': 5} или {'condition': '= {{$node[\"Check\"].json[\"continue\"]}}'}."
+    },
+    {
+        "name": "Webhook Trigger",
+        "parameters": {
+            "httpMethod": "string (например, 'POST', 'GET', 'PUT')",
+            "path": "string (уникальный путь вебхука, например, 'my-webhook')",
+            "responseMode": "string (например, 'onReceived', 'lastNode')",
+            "authentication": "string (например, 'none', 'basicAuth', опционально)"
+        },
+        "description": "Узел для запуска workflow через HTTP-запрос. 'httpMethod' — метод запроса (например, 'POST'). 'path' — уникальный путь (например, 'my-webhook' → https://<instance>/webhook/my-webhook). 'responseMode': 'onReceived' — ответить сразу после получения запроса, 'lastNode' — после выполнения всего workflow (требует 'Webhook Respond'). 'authentication' — тип авторизации (например, 'basicAuth' с credentials). Данные запроса доступны через $node['Webhook Trigger'].json (например, тело POST-запроса). Выход 'main' запускает workflow. Пример: {'httpMethod': 'POST', 'path': 'my-webhook', 'responseMode': 'onReceived'}."
+    },
+    {
+        "name": "Webhook Respond",
+        "parameters": {
+            "respondWith": "string (например, 'json', 'text', 'binary', 'redirect')",
+            "responseBody": "string (тело ответа, например, '= {\"result\": {{$node[\"Calculate\"].json[\"value\"]}}}')",
+            "options": {
+                "responseCode": "number (например, 200, опционально)",
+                "responseHeaders": "object (например, {'Content-Type': 'application/json'}, опционально)"
+            }
+        },
+        "description": "Узел для отправки ответа клиенту вебхука. 'respondWith' определяет формат: 'json' — JSON-объект, 'text' — строка, 'binary' — файл, 'redirect' — перенаправление. 'responseBody' — тело ответа (строка или выражение, например, '= {\"result\": {{$node[\"Calculate\"].json[\"value\"]}}}' берёт данные из другого узла). Для 'binary' добавьте 'binaryPropertyName' (например, 'data') в 'options'. 'options.responseCode' — код ответа (по умолчанию 200), 'responseHeaders' — заголовки (например, {'Content-Type': 'application/json'}). Вход 'main' от 'Webhook Trigger', выполняется один раз. Пример: {'respondWith': 'json', 'responseBody': '= {\"result\": {{$node[\"Calculate\"].json[\"value\"]}}}'}."
+    },
+    {
+        "name": "HTTP Request",
+        "parameters": {
+            "method": "string (например, 'GET', 'POST', 'PUT', 'DELETE')",
+            "url": "string (адрес, например, 'https://api.example.com/data')",
+            "responseFormat": "string (например, 'json', 'string', 'file')",
+            "body": "object (для POST/PUT, например, {'key': 'value'}, опционально)",
+            "authentication": "string (например, 'none', 'basicAuth', опционально)",
+            "options": {
+                "timeout": "number (в миллисекундах, например, 30000, опционально)",
+                "ignoreResponseCode": "boolean (например, true, опционально)"
+            }
+        },
+        "description": "Узел для HTTP-запросов к внешним API. 'method' — HTTP-метод (например, 'GET'). 'url' — адрес (может быть выражением, например, '= {{$json[\"url\"]}}'). 'responseFormat': 'json' — разобрать ответ как JSON, 'string' — текст, 'file' — сохранить как binary (доступ через $binary). Для 'POST' или 'PUT' добавьте 'body' (JSON или form-data через 'bodyParameters'). 'authentication' — тип авторизации (например, 'basicAuth' с credentials). 'options': 'timeout' — время ожидания, 'ignoreResponseCode' — игнорировать ошибки HTTP. Вход 'main' опционален, выход 'main' возвращает ответ. Пример: {'method': 'GET', 'url': 'https://api.example.com/data', 'responseFormat': 'json'}."
+    },
+    {
+        "name": "If",
+        "parameters": {
+            "conditions": {
+                "number": "array (например, [{'value1': '= {{$json[\"score\"]}}', 'operation': 'larger', 'value2': 10}])",
+                "string": "array (например, [{'value1': '= {{$json[\"status\"]}}', 'operation': 'equal', 'value2': 'success'}], опционально)",
+                "boolean": "array (например, [{'value1': '= {{$json[\"active\"]}}', 'operation': 'equal', 'value2': true}], опционально)"
+            },
+            "combineOperation": "string (например, 'all', 'any', по умолчанию 'all')"
+        },
+        "description": "Узел для условного ветвления с двумя выходами: True (индекс 0) и False (индекс 1). 'conditions' задаёт сравнения по типам данных: 'number', 'string', 'boolean' и др. Каждый элемент массива включает 'value1' (левый операнд, значение или выражение), 'operation' (тип сравнения: 'larger', 'equal', 'contains' и т.д.), 'value2' (правый операнд). 'combineOperation': 'all' — все условия должны быть истинны (AND), 'any' — хотя бы одно (OR). Вход 'main' принимает данные, выходы 'main' направляют поток в зависимости от условия. Пример: {'conditions': {'number': [{'value1': '= {{$json[\"score\"]}}', 'operation': 'larger', 'value2': 10}]}, 'combineOperation': 'all'} — если score > 10, данные идут в True."
+    },
+    {
+        "name": "Switch",
+        "parameters": {
+            "dataType": "string (например, 'string', 'number', 'boolean')",
+            "value1": "string (значение для сравнения, например, '= {{$json[\"status\"]}}')",
+            "rules": {
+                "rules": "array (например, [{'operation': 'equal', 'value2': 'success'}, {'operation': 'equal', 'value2': 'error'}])"
+            },
+            "fallbackOutput": "number (индекс выхода для несовпадений, например, 2, опционально)"
+        },
+        "description": "Узел для множественного ветвления. 'dataType' — тип данных для сравнения. 'value1' — сравниваемое значение (статическое или выражение). 'rules.rules' — массив правил: 'operation' (например, 'equal', 'larger') и 'value2' (значение для сравнения). Выходы 'main' нумеруются по порядку правил: 0 — первое правило, 1 — второе и т.д. 'fallbackOutput' — индекс выхода для несовпадений (например, 2). Вход 'main' принимает данные, выходы 'main' распределяют поток. Пример: {'dataType': 'string', 'value1': '= {{$json[\"status\"]}}', 'rules': {'rules': [{'operation': 'equal', 'value2': 'success'}, {'operation': 'equal', 'value2': 'error'}]}, 'fallbackOutput': 2} — 'success' → выход 0, 'error' → выход 1, остальное → выход 2."
+    },
+    {
+        "name": "Postgres",
+        "parameters": {
+            "operation": "string (например, 'executeQuery', 'insert', 'update', 'delete', по умолчанию 'insert')",
+            "table": "string (имя таблицы, например, 'users')",
+            "columns": "string (список столбцов, например, 'name,age')",
+            "additionalFields": "object (например, {'schema': 'public', 'returnFields': 'id,name'}, опционально)"
+        },
+        "description": "Узел для работы с PostgreSQL. 'operation': 'executeQuery' — выполнить SQL-запрос, 'insert' — вставить данные, 'update' — обновить, 'delete' — удалить. 'table' — имя таблицы. 'columns' — список столбцов для операций вставки/обновления (значения берутся из входного JSON по именам столбцов). 'additionalFields': 'schema' — схема базы, 'returnFields' — возвращаемые поля. Требуются credentials типа 'postgres'. Вход 'main' опционален (данные для вставки), выход 'main' возвращает результат. Пример: {'operation': 'insert', 'table': 'users', 'columns': 'name,age', 'additionalFields': {}}."
+    },
+    {
+        "name": "Aggregate",
+        "parameters": {
+            "aggregate": "string (например, 'aggregateAllItemData', 'aggregateIndividualFields')",
+            "destinationFieldName": "string (имя выходного поля, например, 'combinedData')",
+            "include": "string (например, 'all', 'specified', 'allExcept')",
+            "options": {
+                "includeBinaries": "boolean (например, false, опционально)"
+            }
+        },
+        "description": "Узел для агрегации данных. 'aggregate': 'aggregateAllItemData' — объединить все items в одно поле, 'aggregateIndividualFields' — собрать указанные поля в массивы. 'destinationFieldName' — имя поля для результата (например, 'combinedData'). 'include': 'all' — включить все поля, 'specified' — только указанные, 'allExcept' — все, кроме указанных. 'options.includeBinaries' — включать ли бинарные данные. Вход 'main' принимает массив items, выход 'main' возвращает агрегированные данные. Пример: {'aggregate': 'aggregateAllItemData', 'destinationFieldName': 'combinedData', 'include': 'all', 'options': {'includeBinaries': false}}."
+    },
+    {
+        "name": "Set",
+        "parameters": {
+            "values": {
+                "string": "array (например, [{'name': 'full_name', 'value': '= {{$json[\"first_name\"] + \" \" + $json[\"last_name\"]}}'}, {'name': 'active', 'value': 'true'}])",
+                "number": "array (например, [{'name': 'age', 'value': 30}], опционально)",
+                "boolean": "array (например, [{'name': 'isActive', 'value': true}], опционально)"
+            },
+            "options": {
+                "keepOnlySet": "boolean (например, true, опционально)",
+                "dotNotation": "boolean (например, true, опционально)"
+            }
+        },
+        "description": "Узел (Edit Fields) для установки/изменения полей JSON. 'values' группирует поля по типам: 'string', 'number', 'boolean'. Каждый элемент: 'name' — имя поля, 'value' — значение (статическое или выражение). 'options': 'keepOnlySet' — оставить только заданные поля, 'dotNotation' — поддержка вложенности (например, 'user.name'). Вход 'main' принимает данные, выход 'main' возвращает изменённый JSON. Пример: {'values': {'string': [{'name': 'full_name', 'value': '= {{$json[\"first_name\"] + \" \" + $json[\"last_name\"]}}'}, {'name': 'active', 'value': 'true'}]}, 'options': {'keepOnlySet': true}}."
+    },
+    {
+        "name": "Extract from File",
+        "parameters": {
+            "operation": "string (например, 'csv', 'pdf', 'json')",
+            "binaryPropertyName": "string (имя бинарного поля, например, 'data')",
+            "options": {
+                "encoding": "string (например, 'utf8', опционально)",
+                "delimiter": "string (например, ',', для CSV, опционально)"
+            }
+        },
+        "description": "Узел для извлечения данных из файла (binary → JSON). 'operation' — формат файла: 'csv', 'pdf', 'json' и др. 'binaryPropertyName' — имя бинарного поля во входных данных (по умолчанию 'data'). 'options': 'encoding' — кодировка, 'delimiter' — разделитель для CSV. Вход 'main' принимает binary данные (например, от 'GitHub'), выход 'main' возвращает JSON (например, строки CSV как массив объектов). Пример: {'operation': 'csv', 'binaryPropertyName': 'data', 'options': {}}."
+    },
+    {
+        "name": "Convert to File",
+        "parameters": {
+            "operation": "string (например, 'toCSV', 'toJSON', 'toBinary')",
+            "sourceProperty": "string (имя выходного бинарного поля, например, 'report')",
+            "options": {
+                "fileName": "string (например, 'users.csv', опционально)",
+                "headerRow": "boolean (например, true, для CSV, опционально)"
+            }
+        },
+        "description": "Узел для конвертации JSON в файл (binary). 'operation' — формат: 'toCSV' — CSV-файл, 'toJSON' — JSON-файл, 'toBinary' — произвольный binary. 'sourceProperty' — имя поля для результата (и иногда входного JSON). 'options': 'fileName' — имя файла, 'headerRow' — включить заголовок для CSV. Вход 'main' принимает JSON items, выход 'main' возвращает binary в $binary[sourceProperty]. Пример: {'operation': 'toCSV', 'sourceProperty': 'report', 'options': {'fileName': 'users.csv', 'headerRow': true}}."
+    },
+    {
+        "name": "Manual Trigger",
+        "parameters": {
+            "parameters": "object (пустой объект, дополнительные параметры не требуются)"
+        },
+        "description": "Узел для ручного запуска workflow при тестировании. Не требует параметров, активируется кнопкой 'Test workflow' в n8n. Может быть отключён ('disabled': true). Вход отсутствует, выход 'main' запускает следующий узел (например, 'GitHub'). Пример: {'parameters': {}}."
+    },
+    {
+        "name": "GitHub",
+        "parameters": {
+            "resource": "string (например, 'file', 'issue', 'repository')",
+            "operation": "string (например, 'get', 'create', 'delete')",
+            "owner": "string (владелец репозитория, например, 'Rabochie')",
+            "repository": "string (имя репозитория, например, 'n8n')",
+            "filePath": "string (путь к файлу, например, 'task223.txt', опционально)",
+            "additionalParameters": "object (например, {'title': 'New Issue'}, опционально)"
+        },
+        "description": "Узел для взаимодействия с GitHub API. 'resource' — тип ресурса: 'file', 'issue', 'repository' и др. 'operation' — действие: 'get', 'create', 'delete'. 'owner' — владелец репозитория (например, 'Rabochie'), 'repository' — имя репозитория (например, 'n8n'), 'filePath' — путь к файлу для операций с файлами. 'additionalParameters' — доп. параметры (например, 'title' для issue). Требуются credentials типа 'githubApi'. Вход 'main' опционален, выход 'main' возвращает данные (например, файл как binary). Пример: {'resource': 'file', 'operation': 'get', 'owner': 'Rabochie', 'repository': 'n8n', 'filePath': 'task223.txt'}."
+    },
+    {
+        "name": "Embeddings OpenAI",
+        "parameters": {
+            "model": "string (например, 'text-embedding-ada-002', опционально)",
+            "options": {
+                "batchSize": "number (размер пакета, например, 10, опционально)",
+                "stripNewLines": "boolean (удалять ли новые строки, например, true, опционально)",
+                "timeout": "number (таймаут в миллисекундах, например, 10000, опционально)"
+            }
+        },
+        "description": "Узел для генерации embeddings с помощью OpenAI. 'model' — модель эмбеддингов (по умолчанию 'text-embedding-ada-002'). 'options': 'batchSize' — число текстов в пакете, 'stripNewLines' — удалять новые строки, 'timeout' — время ожидания API. Требуются credentials 'openAiApi'. Вход 'main' принимает текст, выход 'ai_embedding' передаёт векторы (например, в 'Supabase Vector Store'). Пример: {'model': 'text-embedding-ada-002', 'options': {}}."
+    },
+    {
+        "name": "Default Data Loader",
+        "parameters": {
+            "dataType": "string (например, 'binary', 'json')",
+            "options": {
+                "format": "string (например, 'text', 'json', опционально)",
+                "metadata": "object (например, {'source': 'file.txt'}, опционально)"
+            }
+        },
+        "description": "Узел для загрузки данных в формате документов для AI-цепочек. 'dataType': 'binary' — бинарные данные (например, файлы), 'json' — структурированные данные. 'options': 'format' — формат данных, 'metadata' — дополнительные метаданные. Вход 'main' или 'ai_textSplitter' (от 'Character Text Splitter'), выход 'ai_document' для 'Supabase Vector Store'. Пример: {'dataType': 'binary', 'options': {}}."
+    },
+    {
+        "name": "Chat Trigger",
+        "parameters": {
+            "makeChatPubliclyAvailable": "boolean (например, false, опционально)",
+            "mode": "string (например, 'conversation', 'single_message', опционально)",
+            "authentication": "string (например, 'none', 'basicAuth', опционально)",
+            "initialMessages": "array (например, [{'role': 'system', 'content': 'Привет!'}], опционально)",
+            "chatTitle": "string (например, 'Мой чат-бот', опционально)",
+            "chatDescription": "string (например, 'Чат для поддержки', опционально)"
+        },
+        "description": "Узел-триггер для запуска workflow при получении сообщения в чате. 'makeChatPubliclyAvailable' — публичный доступ к чату. 'mode': 'conversation' — диалог, 'single_message' — одиночные сообщения. 'authentication' — тип авторизации. 'initialMessages' — начальные сообщения (массив с 'role' и 'content'). 'chatTitle' и 'chatDescription' — название и описание чата. Выход 'main' передаёт данные сообщения (например, 'chatInput'). Пример: {'mode': 'conversation', 'chatTitle': 'Поддержка', 'options': {}}."
+    },
+    {
+        "name": "OpenAI Chat Model",
+        "parameters": {
+            "model": "string (например, 'gpt-4o-mini', 'gpt-3.5-turbo')",
+            "options": {
+                "frequencyPenalty": "number (от -2.0 до 2.0, по умолчанию 0, опционально)",
+                "maxTokens": "number (например, 128, опционально)",
+                "responseFormat": "string (например, 'text', 'json', опционально)",
+                "seed": "number (например, 42, опционально)",
+                "temperature": "number (от 0 до 2, по умолчанию 1, опционально)",
+                "topP": "number (от 0 до 1, по умолчанию 1, опционально)"
+            }
+        },
+        "description": "Узел для интеграции с чат-моделью OpenAI. 'model' — модель (например, 'gpt-4o-mini'). 'options': 'frequencyPenalty' — штраф за повторы, 'maxTokens' — максимум токенов, 'responseFormat' — формат ответа, 'seed' — фиксирует случайность, 'temperature' — креативность, 'topP' — выбор токенов. Требуются credentials 'openAiApi'. Вход 'main' опционален, выход 'ai_languageModel' для 'Basic LLM Chain'. Пример: {'model': 'gpt-4o-mini', 'options': {}}."
+    },
+    {
+        "name": "Code",
+        "parameters": {
+            "language": "string (например, 'javascript', 'python', по умолчанию 'javascript')",
+            "jsCode": "string (JavaScript-код, например, 'return $input.all()')",
+            "pythonCode": "string (Python-код, например, 'return {\"result\": input_data[\"value\"] * 2}', опционально)"
+        },
+        "description": "Узел для выполнения кода на JavaScript или Python. 'language' — язык: 'javascript' или 'python'. 'jsCode' — JavaScript-код, где '$input.all()' возвращает все входные items. 'pythonCode' — Python-код с 'input_data'. Код должен возвращать данные через 'return'. Вход 'main' принимает данные, выход 'main' возвращает результат. Пример: {'language': 'javascript', 'jsCode': 'const data = $input.all(); const mergedPageContent = data.map(item => item.json.document.pageContent); const chatInput = $(\"Chat Trigger\").first().json.chatInput; return {pageContent: mergedPageContent, chatInput: chatInput};'} объединяет данные."
+    },
+    {
+        "name": "Character Text Splitter",
+        "parameters": {
+            "separator": "string (например, '--------------------------------------------------', по умолчанию '\\n')",
+            "chunkSize": "number (максимальная длина чанка, например, 2000)",
+            "chunkOverlap": "number (перекрытие чанков, например, 200, опционально)"
+        },
+        "description": "Узел для разбиения текста на части. 'separator' — разделитель текста (например, '--------------------------------------------------'). 'chunkSize' — максимальная длина чанка в символах. 'chunkOverlap' — перекрытие между чанками для сохранения контекста. Вход 'main' принимает текст (например, от 'Default Data Loader'), выход 'ai_textSplitter' возвращает массив чанков. Пример: {'separator': '--------------------------------------------------', 'chunkSize': 2000}."
+    },
+    {
+        "name": "Split Out",
+        "parameters": {
+            "fieldToSplitOut": "string (поле с массивом, например, 'output.results')",
+            "include": "string (например, 'allOtherFields', 'noOtherFields')",
+            "disableDotNotation": "boolean (например, false, опционально)",
+            "destinationFieldName": "string (имя поля для результата, например, 'splitItems', опционально)",
+            "includeBinary": "boolean (например, false, опционально)"
+        },
+        "description": "Узел для разбиения поля с массивом на отдельные элементы. 'fieldToSplitOut' — имя поля с массивом (например, 'output.results'). 'include': 'allOtherFields' — сохранить остальные поля, 'noOtherFields' — только разбитое поле. 'disableDotNotation' — отключить вложенность. 'destinationFieldName' — имя поля для результата. 'includeBinary' — включать бинарные данные. Вход 'main' принимает JSON, выход 'main' возвращает отдельные items. Пример: {'fieldToSplitOut': 'output.results', 'include': 'allOtherFields'}."
+    },
+    {
+        "name": "Structured Output Parser",
+        "parameters": {
+            "schemaType": "string (например, 'json', по умолчанию 'json')",
+            "jsonSchema": "string (JSON-схема, например, '{\"type\": \"object\", \"properties\": {\"results\": {\"type\": \"array\", \"items\": {\"type\": \"string\"}}}}')"
+        },
+        "description": "Узел для парсинга вывода LLM в структурированный формат. 'schemaType' — тип схемы (обычно 'json'). 'jsonSchema' — строка с JSON-схемой, описывающей ожидаемый формат (например, массив строк в 'results'). Вход 'ai_outputParser' от 'Basic LLM Chain', выход 'main' возвращает структурированный JSON. Пример: {'schemaType': 'json', 'jsonSchema': '{\"type\": \"object\", \"properties\": {\"results\": {\"type\": \"array\", \"items\": {\"type\": \"string\"}}}}'}."
+    }
+]
