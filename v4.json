@@ -1,0 +1,409 @@
+[
+  {
+    "name": "Basic LLM Chain",
+    "type": "@n8n/n8n-nodes-langchain.chainLlm",
+    "typeVersion": 1.6,
+    "position": [ 220, 0 ],
+    "parameters": {
+      "promptType": "define",
+      "text": "={{ $json }}",
+      "hasOutputParser": true,
+      "messages": {
+        "messageValues": [
+          {
+            "message": "Prompt"
+          }
+        ]
+      }
+    },
+    "description": "Этот узел Basic LLM Chain обрабатывает входные данные через языковую модель. Настройки: 1) promptType - 'define' для явного определения промпта; 2) text - динамически использует все входные данные в формате JSON ($json); 3) hasOutputParser - включен для структурирования ответа модели; 4) messages - содержит одно сообщение 'Prompt' для задания начального контекста."
+  },
+  {
+    "name": "Supabase",
+    "type": "n8n-nodes-base.supabase",
+    "typeVersion": 1,
+    "position": [ 1600, 140 ],
+    "parameters": {
+      "operation": "get",
+      "tableId": "nodes",
+      "filters": {
+        "conditions": [
+          {
+            "keyName": "workflow_id",
+            "keyValue": "4"
+          }
+        ]
+      }
+    },
+    "credentials": {
+      "supabaseApi": {
+        "id": "wqQObseELVakgRgb",
+        "name": "Avainovator"
+      }
+    },
+    "description": "Узел Supabase извлекает данные из базы данных Supabase. Настройки: 1) operation - 'get' для получения записей; 2) tableId - 'nodes' указывает таблицу, из которой извлекаются данные; 3) filters - фильтрует записи, где workflow_id равен '4'. Требуется наличие таблицы 'nodes' с соответствующим полем workflow_id."
+  },
+  {
+    "name": "Supabase Vector Store",
+    "type": "@n8n/n8n-nodes-langchain.vectorStoreSupabase",
+    "typeVersion": 1.1,
+    "position": [ 680, 0 ],
+    "parameters": {
+      "mode": "load",
+      "tableName": {
+        "__rl": true,
+        "value": "nodesrules",
+        "mode": "list",
+        "cachedResultName": "nodesrules"
+      },
+      "prompt": "={{ $json }}",
+      "options": {
+        "queryName": "match_nodesrules"
+      }
+    },
+    "credentials": {
+      "supabaseApi": {
+        "id": "wqQObseELVakgRgb",
+        "name": "Avainovator"
+      }
+    },
+    "description": "Узел Supabase Vector Store загружает векторные данные из Supabase. Настройки: 1) mode - 'load' для загрузки данных; 2) tableName - 'nodesrules' указывает таблицу векторного хранилища; 3) prompt - использует все входные данные JSON ($json); 4) options.queryName - 'match_nodesrules' задает имя запроса для поиска. Таблица 'nodesrules' должна быть настроена с поддержкой pgvector."
+  },
+  {
+    "name": "Loop Over Items",
+    "type": "n8n-nodes-base.splitInBatches",
+    "typeVersion": 3,
+    "position": [ 1420, 160 ],
+    "parameters": {
+      "options": {}
+    },
+    "description": "Узел Loop Over Items разбивает входные данные на пакеты для последовательной обработки. Настройки: 1) options - оставлено пустым, используются значения по умолчанию для размера пакета и поведения цикла. Подходит для итеративной обработки больших наборов данных."
+  },
+  {
+    "name": "Webhook",
+    "type": "n8n-nodes-base.webhook",
+    "typeVersion": 2,
+    "position": [ 500, -180 ],
+    "parameters": {
+      "httpMethod": "POST",
+      "path": "43f8fe84-a3f3-48f3-add4-6cc3dedd9864",
+      "responseMode": "responseNode",
+      "options": {}
+    },
+    "description": "Узел Webhook активирует рабочий процесс через HTTP-запрос. Настройки: 1) httpMethod - 'POST' для приема данных методом POST; 2) path - уникальный идентификатор пути '43f8fe84-a3f3-48f3-add4-6cc3dedd9864'; 3) responseMode - 'responseNode' для передачи ответа следующему узлу; 4) options - пусто, используется конфигурация по умолчанию."
+  },
+  {
+    "name": "Respond to Webhook",
+    "type": "n8n-nodes-base.respondToWebhook",
+    "typeVersion": 1.1,
+    "position": [ 660, -180 ],
+    "parameters": {
+      "options": {}
+    },
+    "description": "Узел Respond to Webhook формирует ответ на входящий вебхук-запрос. Настройки: 1) options - оставлено пустым, что означает использование стандартного формата ответа (обычно JSON) и кода состояния 200."
+  },
+  {
+    "name": "HTTP Request",
+    "type": "n8n-nodes-base.httpRequest",
+    "typeVersion": 4.2,
+    "position": [ 1200, 160 ],
+    "parameters": {
+      "method": "POST",
+      "url": "churka.com",
+      "options": {}
+    },
+    "description": "Узел HTTP Request выполняет POST-запрос к внешнему ресурсу. Настройки: 1) method - 'POST' для отправки данных; 2) url - 'churka.com' указывает адрес назначения; 3) options - пусто, используется конфигурация по умолчанию (без таймаута или дополнительных заголовков)."
+  },
+  {
+    "name": "If",
+    "type": "n8n-nodes-base.if",
+    "typeVersion": 2.2,
+    "position": [ 1520, -140 ],
+    "parameters": {
+      "conditions": {
+        "options": {
+          "caseSensitive": true,
+          "leftValue": "",
+          "typeValidation": "strict",
+          "version": 2
+        },
+        "conditions": [
+          {
+            "id": "40b9277b-1890-4dfa-8b69-c8a1dba6f462",
+            "leftValue": "31",
+            "rightValue": "31",
+            "operator": {
+              "type": "string",
+              "operation": "equals",
+              "name": "filter.operator.equals"
+            }
+          }
+        ],
+        "combinator": "and"
+      },
+      "options": {}
+    },
+    "description": "Узел If выполняет условную маршрутизацию. Настройки: 1) conditions - проверяет, равно ли значение '31' строке '31' с учетом регистра; 2) combinator - 'and' требует выполнения всех условий; 3) options - пусто, используются настройки по умолчанию."
+  },
+  {
+    "name": "Switch",
+    "type": "n8n-nodes-base.switch",
+    "typeVersion": 3.2,
+    "position": [ 1520, 20 ],
+    "parameters": {
+      "rules": {
+        "values": [
+          {
+            "conditions": {
+              "options": {
+                "caseSensitive": true,
+                "leftValue": "",
+                "typeValidation": "strict",
+                "version": 2
+              },
+              "conditions": [
+                {
+                  "leftValue": "={{ $json }}",
+                  "rightValue": "31",
+                  "operator": {
+                    "type": "string",
+                    "operation": "equals"
+                  },
+                  "id": "8db785db-e282-47d1-bdc3-83e97cdf28d3"
+                }
+              ],
+              "combinator": "and"
+            }
+          },
+          {
+            "conditions": {
+              "options": {
+                "caseSensitive": true,
+                "leftValue": "",
+                "typeValidation": "strict",
+                "version": 2
+              },
+              "conditions": [
+                {
+                  "id": "db1f536d-56c6-4904-9e10-2a29b3d72cde",
+                  "leftValue": "={{ $json }}",
+                  "rightValue": "12",
+                  "operator": {
+                    "type": "string",
+                    "operation": "equals",
+                    "name": "filter.operator.equals"
+                  }
+                }
+              ],
+              "combinator": "and"
+            }
+          },
+          {
+            "conditions": {
+              "options": {
+                "caseSensitive": true,
+                "leftValue": "",
+                "typeValidation": "strict",
+                "version": 2
+              },
+              "conditions": [
+                {
+                  "id": "d21661be-63c8-43fa-ad84-98f484e3d3ed",
+                  "leftValue": "={{ $json }}",
+                  "rightValue": "1",
+                  "operator": {
+                    "type": "string",
+                    "operation": "equals",
+                    "name": "filter.operator.equals"
+                  }
+                }
+              ],
+              "combinator": "and"
+            }
+          }
+        ]
+      },
+      "options": {}
+    },
+    "description": "Узел Switch направляет поток данных по нескольким путям. Настройки: 1) rules - три условия проверяют равенство $json значениям '31', '12' и '1'; 2) options - пусто, используется поведение по умолчанию для маршрутизации."
+  },
+  {
+    "name": "Postgres",
+    "type": "n8n-nodes-base.postgres",
+    "typeVersion": 2.6,
+    "position": [ 1520, -260 ],
+    "parameters": {
+      "operation": "executeQuery",
+      "options": {}
+    },
+    "credentials": {
+      "postgres": {
+        "id": "KRErWdT7NdyZG9mY",
+        "name": "Avainovator"
+      }
+    },
+    "description": "Узел Postgres выполняет SQL-запрос к базе данных PostgreSQL. Настройки: 1) operation - 'executeQuery' для выполнения пользовательского запроса; 2) options - пусто, требуется указание запроса в дополнительных параметрах при необходимости."
+  },
+  {
+    "name": "Aggregate",
+    "type": "n8n-nodes-base.aggregate",
+    "typeVersion": 1,
+    "position": [ 1040, 160 ],
+    "parameters": {
+      "fieldsToAggregate": {
+        "fieldToAggregate": [
+          {
+            "fieldToAggregate": "data"
+          }
+        ]
+      },
+      "options": {}
+    },
+    "description": "Узел Aggregate собирает данные из поля 'data' в один элемент. Настройки: 1) fieldsToAggregate - объединяет значения поля 'data'; 2) options - пусто, используются стандартные параметры агрегации."
+  },
+  {
+    "name": "Edit Fields",
+    "type": "n8n-nodes-base.set",
+    "typeVersion": 3.4,
+    "position": [ 1240, -160 ],
+    "parameters": {
+      "assignments": {
+        "assignments": [
+          {
+            "id": "760391bd-4942-4f63-a754-9b4117d6e95d",
+            "name": "dada",
+            "value": "dadad",
+            "type": "string"
+          }
+        ]
+      },
+      "options": {}
+    },
+    "description": "Узел Edit Fields задает новое поле в данных. Настройки: 1) assignments - добавляет поле 'dada' со значением 'dadad' типа string; 2) options - пусто, сохраняются все существующие поля по умолчанию."
+  },
+  {
+    "name": "Extract from File",
+    "type": "n8n-nodes-base.extractFromFile",
+    "typeVersion": 1,
+    "position": [ 920, -180 ],
+    "parameters": {
+      "operation": "text",
+      "options": {}
+    },
+    "description": "Узел Extract from File извлекает текст из файла. Настройки: 1) operation - 'text' для обработки текстовых данных; 2) options - пусто, используется кодировка по умолчанию (обычно UTF-8). Ожидается бинарное свойство 'data'."
+  },
+  {
+    "name": "Convert to File",
+    "type": "n8n-nodes-base.convertToFile",
+    "typeVersion": 1.1,
+    "position": [ 1080, -180 ],
+    "parameters": {
+      "operation": "toText",
+      "sourceProperty": "data",
+      "options": {}
+    },
+    "description": "Узел Convert to File преобразует данные в текстовый файл. Настройки: 1) operation - 'toText' для создания текстового файла; 2) sourceProperty - 'data' указывает источник данных; 3) options - пусто, используется имя файла по умолчанию."
+  },
+  {
+    "name": "When clicking ‘Test workflow’",
+    "type": "n8n-nodes-base.manualTrigger",
+    "typeVersion": 1,
+    "position": [ 340, -180 ],
+    "parameters": {},
+    "description": "Узел When clicking ‘Test workflow’ инициирует выполнение рабочего процесса вручную при нажатии кнопки тестирования в интерфейсе n8n. Настройки отсутствуют."
+  },
+  {
+    "name": "Embeddings OpenAI",
+    "type": "@n8n/n8n-nodes-langchain.embeddingsOpenAI",
+    "typeVersion": 1.2,
+    "position": [ 680, 200 ],
+    "parameters": {
+      "options": {}
+    },
+    "credentials": {
+      "openAiApi": {
+        "id": "QzomCS3ZpbP3fzb8",
+        "name": "OpenAi account"
+      }
+    },
+    "description": "Узел Embeddings OpenAI создает векторные представления текста с использованием OpenAI. Настройки: 1) options - пусто, используется модель по умолчанию (например, text-embedding-ada-002) и стандартные параметры обработки."
+  },
+  {
+    "name": "Default Data Loader",
+    "type": "@n8n/n8n-nodes-langchain.documentDefaultDataLoader",
+    "typeVersion": 1,
+    "position": [ 820, -380 ],
+    "parameters": {},
+    "description": "Узел Default Data Loader подготавливает данные для обработки в LangChain. Настройки отсутствуют, используется формат данных по умолчанию (JSON) и стандартное поведение загрузки."
+  },
+  {
+    "name": "When chat message received",
+    "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+    "typeVersion": 1.1,
+    "position": [ 1220, -320 ],
+    "parameters": {
+      "options": {}
+    },
+    "description": "Узел When chat message received запускает рабочий процесс при получении сообщения в чате n8n. Настройки: 1) options - пусто, используется режим диалога по умолчанию без публичного доступа."
+  },
+  {
+    "name": "OpenAI Chat Model",
+    "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+    "typeVersion": 1.2,
+    "position": [ 220, 180 ],
+    "parameters": {
+      "model": {
+        "__rl": true,
+        "mode": "list",
+        "value": "gpt-4o-mini"
+      },
+      "options": {}
+    },
+    "credentials": {
+      "openAiApi": {
+        "id": "QzomCS3ZpbP3fzb8",
+        "name": "OpenAi account"
+      }
+    },
+    "description": "Узел OpenAI Chat Model обрабатывает чат-взаимодействия с моделью OpenAI. Настройки: 1) model - 'gpt-4o-mini' указывает используемую модель; 2) options - пусто, используются параметры по умолчанию (например, температура 0.7, maxTokens не ограничен)."
+  },
+  {
+    "name": "Code",
+    "type": "n8n-nodes-base.code",
+    "typeVersion": 2,
+    "position": [ 1040, 0 ],
+    "parameters": {
+      "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nfor (const item of $input.all()) {\n  item.json.myNewField = 1;\n}\n\nreturn $input.all();"
+    },
+    "description": "Узел Code выполняет JavaScript-код для обработки данных. Настройки: 1) jsCode - добавляет поле 'myNewField' со значением 1 к каждому JSON-элементу во входных данных и возвращает измененный массив."
+  },
+  {
+    "name": "Character Text Splitter",
+    "type": "@n8n/n8n-nodes-langchain.textSplitterCharacterTextSplitter",
+    "typeVersion": 1,
+    "position": [ 600, -280 ],
+    "parameters": {
+      "separator": "----"
+    },
+    "description": "Узел Character Text Splitter разбивает текст на части по заданному разделителю. Настройки: 1) separator - '----' используется как разделитель текста; размер фрагментов и перекрытие заданы по умолчанию (например, 1000 и 200)."
+  },
+  {
+    "name": "Split Out",
+    "type": "n8n-nodes-base.splitOut",
+    "typeVersion": 1,
+    "position": [ 880, 160 ],
+    "parameters": {
+      "fieldToSplitOut": "data",
+      "options": {}
+    },
+    "description": "Узел Split Out разделяет поле 'data' на отдельные элементы. Настройки: 1) fieldToSplitOut - 'data' указывает поле для разделения; 2) options - пусто, все остальные поля сохраняются по умолчанию."
+  },
+  {
+    "name": "Structured Output Parser",
+    "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+    "typeVersion": 1.2,
+    "position": [ 400, 180 ],
+    "parameters": {},
+    "description": "Узел Structured Output Parser форматирует выходные данные LLM в структурированный вид. Настройки отсутствуют, используется схема по умолчанию для обработки ответа модели."
+  }
+]
