@@ -1,0 +1,428 @@
+[
+  {
+    "name": "Basic LLM Chain",
+    "type": "@n8n/n8n-nodes-langchain.chainLlm",
+    "typeVersion": 1.5,
+    "position": [ 100, 100 ],
+    "parameters": {
+      "promptType": "define",
+      "text": "={{ $json.message_content }}",
+      "hasOutputParser": true,
+      "messages": {
+        "messageValues": [
+          {
+            "message": "System: You are a helpful assistant tasked with analyzing user messages."
+          }
+        ]
+      }
+    },
+    "description": "Узел LLM Chain обрабатывает текстовые данные через языковую модель. Необходимо настроить: 1) promptType - выбран 'define' для прямого ввода промпта; 2) text - использует динамическое значение из входных данных ($json.message_content); 3) hasOutputParser - включен для структурированного вывода; 4) messages - содержит системное сообщение для установки контекста модели. Дополнительно можно настроить модель LLM в поле 'model' и указать максимальное количество токенов в 'maxTokens'."
+  },
+  {
+    "name": "Supabase",
+    "type": "n8n-nodes-base.supabase",
+    "typeVersion": 1,
+    "position": [ 200, 100 ],
+    "parameters": {
+      "operation": "create",
+      "table": "temp_messages",
+      "fieldsUi": {
+        "fieldValues": [
+          {
+            "fieldId": "user_id",
+            "fieldValue": "={{ $json.message.from.id }}"
+          },
+          {
+            "fieldId": "message_content",
+            "fieldValue": "={{ $json.text }}"
+          }
+        ]
+      }
+    },
+    "credentials": {
+      "supabaseApi": {
+        "id": "bD9Xr5bVMRiXxNEW",
+        "name": "Volodya"
+      }
+    },
+    "description": "Узел Supabase записывает данные в базу данных Supabase. Настройки: 1) operation - 'create' для добавления новых записей; 2) table - 'temp_messages' таблица для сохранения; 3) fieldsUi - сопоставление полей: user.Zip_id получает значение ID отправителя из входящего сообщения, message_content получает текст сообщения. Важно убедиться, что таблица 'temp_messages' существует и содержит соответствующие поля. При необходимости можно добавить дополнительные поля через fieldsUi, например timestamp или message_id."
+  },
+  {
+    "name": "Supabase Vector Store",
+    "type": "@n8n/n8n-nodes-langchain.vectorStoreSupabase",
+    "typeVersion": 1,
+    "position": [ 300, 100 ],
+    "parameters": {
+      "operation": "insert",
+      "table": "ai_trashcan",
+      "prompt": "={{ $json.query }}",
+      "limit": 5
+    },
+    "credentials": {
+      "supabaseApi": {
+        "id": "bD9Xr5bVMRiXxNEW",
+        "name": "Volodya"
+      }
+    },
+    "description": "Узел Supabase Vector Store работает с векторными данными в Supabase. Настройки: 1) operation - 'insert' для добавления записей в векторное хранилище; 2) table - 'ai_trashcan' название таблицы векторного хранилища; 3) prompt - получает значение запроса из $json.query; 4) limit - ограничивает результаты до 5 записей. Необходимо убедиться, что таблица 'ai_trashcan' настроена с расширением pgvector в Supabase и содержит поле embeddings типа vector. Также можно настроить поле 'contentColumn' для указания названия колонки с текстом и 'embeddingColumn' для указания колонки с векторами."
+  },
+  {
+    "name": "Python Code",
+    "type": "n8n-nodes-base.code",
+    "typeVersion": 2,
+    "position": [ 400, 100 ],
+    "parameters": {
+      "language": "python",
+      "pythonCode": "return {\"result\": input_data[\"message_content\"] + \" processed\"}"
+    },
+    "description": "Узел Python Code выполняет Python-код для обработки данных. Настройки: 1) language - 'python' определяет язык кода; 2) pythonCode - содержит Python-скрипт, который берет message_content из входного объекта input_data, добавляет слово 'processed' и возвращает как result. Можно расширить код для более сложной обработки, например, для очистки текста, токенизации или применения алгоритмов NLP. Важно использовать переменную input_data для доступа к входящим данным и возвращать данные в формате словаря Python."
+  },
+  {
+    "name": "Loop",
+    "type": "n8n-nodes-base.loopOverItems",
+    "typeVersion": 1,
+    "position": [ 500, 100 ],
+    "parameters": {
+      "iterations": 3,
+      "condition": "={{ $node[\"Check\"].json[\"continue\"] }}"
+    },
+    "description": "Узел Loop выполняет цикличную обработку данных. Настройки: 1) iterations - количество итераций цикла (3); 2) condition - условие продолжения цикла, зависящее от значения поля 'continue' в выводе узла 'Check'. Важно убедиться, что узел 'Check' существует в рабочем процессе и возвращает объект с полем 'continue' типа boolean. Дополнительно можно настроить поле 'batchSize' для обработки данных группами и 'options.reset' для сброса состояния внутри цикла."
+  },
+  {
+    "name": "Webhook Trigger",
+    "type": "n8n-nodes-base.webhook",
+    "typeVersion": 1,
+    "position": [ 600, 100 ],
+    "parameters": {
+      "httpMethod": "POST",
+      "path": "telegram-webhook",
+      "responseMode": "onReceived",
+      "authentication": "none"
+    },
+    "description": "Узел Webhook Trigger запускает рабочий процесс по HTTP запросу. Настройки: 1) httpMethod - 'POST' метод для приема данных; 2) path - 'telegram-webhook' часть URL, которая будет использоваться в конечной точке (полный URL: ваш_базовый_url/webhook/telegram-webhook); 3) responseMode - 'onReceived' для немедленного ответа; 4) authentication - 'none' без аутентификации. Рекомендуется добавить аутентификацию через параметр authentication, используя Bearer Token или Basic Auth для защиты вебхука. При использовании с Telegram нужно зарегистрировать этот URL в Telegram API через setWebhook."
+  },
+  {
+    "name": "Webhook Respond",
+    "type": "n8n-nodes-base.respondToWebhook",
+    "typeVersion": 1,
+    "position": [ 700, 100 ],
+    "parameters": {
+      "respondWith": "json",
+      "responseBody": "={{ { \"result\": $node[\"Calculate\"].json[\"value\"] } }}",
+      "options": {
+        "responseCode": 200,
+        "responseHeaders": {
+          "Content-Type": "application/json"
+        }
+      }
+    },
+    "description": "Узел Webhook Respond отправляет ответ на HTTP запрос. Настройки: 1) respondWith - 'json' для ответа в формате JSON; 2) responseBody - динамически формирует тело ответа с результатом из узла 'Calculate'; 3) options.responseCode - код ответа HTTP 200 (Успешно); 4) options.responseHeaders - устанавливает заголовок Content-Type для JSON. Требуется убедиться, что узел 'Calculate' существует и содержит поле 'value'. Исправлена синтаксическая ошибка в responseBody, добавлена закрывающая скобка."
+  },
+  {
+    "name": "HTTP Request",
+    "type": "n8n-nodes-base.httpRequest",
+    "typeVersion": 4.1,
+    "position": [ 800, 100 ],
+    "parameters": {
+      "method": "POST",
+      "url": "https://api.telegram.org/bot{{ $credentials.token }}/sendMessage",
+      "responseFormat": "json",
+      "body": {
+        "chat_id": "={{ $json.message.chat.id }}",
+        "text": "Сообщение обработано"
+      },
+      "authentication": "none",
+      "options": {
+        "timeout": 30000
+      }
+    },
+    "credentials": {
+      "telegramApi": {
+        "id": "QNHJgWL68BVJ7fx3",
+        "name": "Ai Мусорка"
+      }
+    },
+    "description": "Узел HTTP Request отправляет сообщения через Telegram API. Настройки: 1) method - 'POST' для отправки данных; 2) url - эндпоинт Telegram API с динамическим токеном из учетных данных; 3) responseFormat - 'json' для обработки ответа как JSON; 4) body - содержит chat_id из входящего сообщения и текст ответа; 5) options.timeout - 30000 мс таймаут запроса. Можно расширить body, добавив параметры parse_mode (HTML или Markdown), reply_to_message_id для ответа на конкретное сообщение, или disable_notification для тихих уведомлений."
+  },
+  {
+    "name": "If",
+    "type": "n8n-nodes-base.if",
+    "typeVersion": 1,
+    "position": [ 900, 100 ],
+    "parameters": {
+      "conditions": {
+        "string": [
+          {
+            "value1": "={{ $json.message_type }}",
+            "operation": "equals",
+            "value2": "text"
+          }
+        ]
+      },
+      "combineOperation": "all"
+    },
+    "description": "Узел If создает условный маршрут в рабочем процессе. Настройки: 1) conditions.string - проверяет равенство поля message_type значению 'text'; 2) combineOperation - 'all' требует выполнения всех условий. Узел имеет два выхода: true и false. Рабочий процесс продолжится по ветке true, если message_type равен 'text', иначе - по ветке false."
+  },
+  {
+    "name": "Switch",
+    "type": "n8n-nodes-base.switch",
+    "typeVersion": 1,
+    "position": [ 1000, 100 ],
+    "parameters": {
+      "dataType": "string",
+      "value1": "={{ $json.message_type }}",
+      "rules": {
+        "rules": [
+          {
+            "operation": "equals",
+            "value2": "text"
+          },
+          {
+            "operation": "equals",
+            "value2": "file"
+          }
+        ]
+      },
+      "fallbackOutput": 2
+    },
+    "description": "Узел Switch создает многопутевую маршрутизацию. Настройки: 1) dataType - 'string' тип проверяемых данных; 2) value1 - значение message_type из входных данных; 3) rules - набор правил: первое проверяет равенство 'text', второе - 'file'; 4) fallbackOutput - значение 2 для выхода по умолчанию, если ни одно условие не выполнено."
+  },
+  {
+    "name": "Postgres",
+    "type": "n8n-nodes-base.postgres",
+    "typeVersion": 1,
+    "position": [ 1100, 100 ],
+    "parameters": {
+      "operation": "insert",
+      "table": "temp_messages",
+      "columns": "user_id, message_content",
+      "additionalFields": {
+        "schema": "public"
+      }
+    },
+    "credentials": {
+      "postgres": {
+        "id": "DOUeZfO8VVEjmR3m",
+        "name": "Postgres account"
+      }
+    },
+    "description": "Узел Postgres взаимодействует с базой данных PostgreSQL. Настройки: 1) operation - 'insert' для добавления данных; 2) table - 'temp_messages' таблица для вставки; 3) columns - 'user_id, message_content' столбцы для заполнения; 4) additionalFields.schema - 'public' схема базы данных."
+  },
+  {
+    "name": "Aggregate",
+    "type": "n8n-nodes-base.aggregate",
+    "typeVersion": 1,
+    "position": [ 1200, 100 ],
+    "parameters": {
+      "aggregate": "aggregateAllItemData",
+      "destinationFieldName": "combinedData",
+      "include": "all",
+      "options": {
+        "includeBinaries": false
+      }
+    },
+    "description": "Узел Aggregate объединяет несколько элементов в один. Настройки: 1) aggregate - 'aggregateAllItemData' для объединения всех данных; 2) destinationFieldName - 'combinedData' имя поля для хранения объединенных данных; 3) include - 'all' для включения всех полей; 4) options.includeBinaries - false для исключения бинарных данных."
+  },
+  {
+    "name": "Set",
+    "type": "n8n-nodes-base.set",
+    "typeVersion": 1,
+    "position": [ 1300, 100 ],
+    "parameters": {
+      "values": {
+        "string": [
+          {
+            "name": "text",
+            "value": "={{ $json.message_content }}"
+          }
+        ]
+      },
+      "options": {
+        "keepOnlySet": true
+      }
+    },
+    "description": "Узел Set устанавливает или изменяет значения полей. Настройки: 1) values.string - создает поле 'text' со значением из message_content; 2) options.keepOnlySet - true для сохранения только установленных полей (остальные удаляются)."
+  },
+  {
+    "name": "Extract from File",
+    "type": "n8n-nodes-base.extractFromFile",
+    "typeVersion": 1,
+    "position": [ 1400, 100 ],
+    "parameters": {
+      "operation": "pdf",
+      "binaryPropertyName": "data",
+      "options": {
+        "encoding": "utf8"
+      }
+    },
+    "description": "Узел Extract from File извлекает текст из файлов. Настройки: 1) operation - 'pdf' для работы с PDF файлами; 2) binaryPropertyName - 'data' имя свойства с бинарными данными; 3) options.encoding - 'utf8' кодировка для извлеченного текста."
+  },
+  {
+    "name": "Convert to File",
+    "type": "n8n-nodes-base.convertToFile",
+    "typeVersion": 1,
+    "position": [ 1500, 100 ],
+    "parameters": {
+      "operation": "toCSV",
+      "sourceProperty": "report",
+      "options": {
+        "fileName": "report.csv",
+        "headerRow": true
+      }
+    },
+    "description": "Узел Convert to File преобразует данные в файл. Настройки: 1) operation - 'toCSV' для создания CSV-файла; 2) sourceProperty - 'report' имя свойства с данными для конвертации; 3) options.fileName - 'report.csv' имя создаваемого файла; 4) options.headerRow - true для включения заголовка."
+  },
+  {
+    "name": "Manual Trigger",
+    "type": "n8n-nodes-base.manualTrigger",
+    "typeVersion": 1,
+    "position": [ 1600, 100 ],
+    "parameters": {
+      "parameters": {}
+    },
+    "description": "Узел Manual Trigger запускает рабочий процесс вручную. Настройки: Этот узел не требует особой настройки, поле parameters остается пустым."
+  },
+  {
+    "name": "GitHub",
+    "type": "n8n-nodes-base.github",
+    "typeVersion": 1,
+    "position": [ 1700, 100 ],
+    "parameters": {
+      "resource": "file",
+      "operation": "get",
+      "owner": "Rabochie",
+      "repository": "n8n",
+      "filePath": "task223.txt"
+    },
+    "credentials": {
+      "githubApi": {
+        "id": "example_id",
+        "name": "GitHub account"
+      }
+    },
+    "description": "Узел GitHub взаимодействует с GitHub API. Настройки: 1) resource - 'file' для работы с файлами; 2) operation - 'get' для получения файла; 3) owner - 'Rabochie' владелец репозитория; 4) repository - 'n8n' название репозитория; 5) filePath - 'task223.txt' путь к файлу."
+  },
+  {
+    "name": "Embeddings OpenAI",
+    "type": "@n8n/n8n-nodes-langchain.embeddingsOpenAI",
+    "typeVersion": 1,
+    "position": [ 1800, 100 ],
+    "parameters": {
+      "model": "text-embedding-ada-002",
+      "options": {
+        "batchSize": 10,
+        "stripNewLines": true
+      }
+    },
+    "credentials": {
+      "openAiApi": {
+        "id": "QzomCS3ZpbP3fzb8",
+        "name": "OpenAi account"
+      }
+    },
+    "description": "Узел Embeddings OpenAI генерирует векторные представления текста. Настройки: 1) model - 'text-embedding-ada-002' модель для создания эмбеддингов; 2) options.batchSize - 10 размер пакета для обработки; 3) options.stripNewLines - true для удаления переносов строк."
+  },
+  {
+    "name": "Default Data Loader",
+    "type": "@n8n/n8n-nodes-langchain.documentDefaultDataLoader",
+    "typeVersion": 1,
+    "position": [ 1900, 100 ],
+    "parameters": {
+      "dataType": "json",
+      "options": {
+        "format": "text",
+        "metadata": {
+          "source": "telegram"
+        }
+      }
+    },
+    "description": "Узел Default Data Loader загружает и преобразует данные для использования в LangChain. Настройки: 1) dataType - 'json' тип загружаемых данных; 2) options.format - 'text' формат вывода; 3) options.metadata - содержит metadata.source со значением 'telegram'."
+  },
+  {
+    "name": "Chat Trigger",
+    "type": "n8n-nodes-base.chatTrigger",
+    "typeVersion": 1,
+    "position": [ 2000, 100 ],
+    "parameters": {
+      "makeChatPubliclyAvailable": false,
+      "mode": "conversation",
+      "authentication": "none",
+      "initialMessages": [
+        {
+          "role": "system",
+          "content": "Привет! Чем могу помочь?"
+        }
+      ],
+      "chatTitle": "AI Мусорка",
+      "chatDescription": "Чат-бот для обработки сообщений"
+    },
+    "description": "Узел Chat Trigger создает интерфейс чата в n8n. Настройки: 1) makeChatPubliclyAvailable - false для доступа только авторизованным пользователям; 2) mode - 'conversation' для поддержки диалогов; 3) authentication - 'none' без дополнительной аутентификации; 4) initialMessages - начальное сообщение с приветствием; 5) chatTitle и chatDescription - заголовок и описание чата."
+  },
+  {
+    "name": "OpenAI Chat Model",
+    "type": "@n8n/n8n-nodes-langchain.chatOpenAI",
+    "typeVersion": 1,
+    "position": [ 2100, 100 ],
+    "parameters": {
+      "model": "gpt-4o-mini",
+      "options": {
+        "maxTokens": 128,
+        "temperature": 0.7
+      }
+    },
+    "credentials": {
+      "openAiApi": {
+        "id": "QzomCS3ZpbP3fzb8",
+        "name": "OpenAi account"
+      }
+    },
+    "description": "Узел OpenAI Chat Model работает с чат-моделями OpenAI. Настройки: 1) model - 'gpt-4o-mini' используемая модель; 2) options.maxTokens - 128 максимальное количество токенов в ответе; 3) options.temperature - 0.7 степень креативности (0-2)."
+  },
+  {
+    "name": "Code",
+    "type": "n8n-nodes-base.code",
+    "typeVersion": 2,
+    "position": [ 2200, 100 ],
+    "parameters": {
+      "language": "javascript",
+      "jsCode": "return $input.all().map(item => ({ text: item.json.message_content }))"
+    },
+    "description": "Узел Code выполняет JavaScript-код для обработки данных. Настройки: 1) language - 'javascript' язык кода; 2) jsCode - JavaScript код, который преобразует входные данные, извлекая message_content из каждого элемента и формируя новый массив с полем text."
+  },
+  {
+    "name": "Character Text Splitter",
+    "type": "@n8n/n8n-nodes-langchain.textSplitter",
+    "typeVersion": 1,
+    "position": [ 2300, 100 ],
+    "parameters": {
+      "separator": "\n",
+      "chunkSize": 2000,
+      "chunkOverlap": 200
+    },
+    "description": "Узел Character Text Splitter разбивает текст на части для обработки языковыми моделями. Настройки: 1) separator - '\\n' разделитель для разбиения; 2) chunkSize - 2000 максимальный размер фрагмента; 3) chunkOverlap - 200 размер перекрытия между фрагментами."
+  },
+  {
+    "name": "Split Out",
+    "type": "n8n-nodes-base.splitOut",
+    "typeVersion": 1,
+    "position": [ 2400, 100 ],
+    "parameters": {
+      "fieldToSplitOut": "message_content",
+      "include": "allOtherFields",
+      "disableDotNotation": false,
+      "destinationFieldName": "splitItems"
+    },
+    "description": "Разделяет поле message_content на отдельные элементы. Параметры: fieldToSplitOut - поле для разделения (установлено 'message_content'); include - какие поля сохранить (установлено 'allOtherFields' для сохранения всех других полей); disableDotNotation - отключение нотации с точками (установлено false для поддержки обращения к вложенным полям); destinationFieldName - имя поля для результата разделения (установлено 'splitItems')."
+  },
+  {
+    "name": "Structured Output Parser",
+    "type": "@n8n/n8n-nodes-langchain.structuredOutputParser",
+    "typeVersion": 1,
+    "position": [ 2500, 100 ],
+    "parameters": {
+      "schemaType": "json",
+      "jsonSchema": "{\"type\": \"object\", \"properties\": {\"message_content\": {\"type\": \"string\"}, \"is_command\": {\"type\": \"boolean\"}}}"
+    },
+    "description": "Парсер для структурированного вывода LLM в формате JSON. Параметры: schemaType - тип схемы (установлено 'json'); jsonSchema - схема JSON для валидации (настроена на объект с полями message_content и is_command)."
+  }
+]
